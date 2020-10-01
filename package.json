@@ -1,0 +1,22 @@
+{
+  "name": "type-steamapi",
+  "version": "0.8.5",
+  "description": "Steam API wrapper created with typescript",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tekkenthuuug/type-steamapi.git"
+  },
+  "author": "tekkenthuuug <sa.soto317@gmail.com> (https://github.com/tekkenthuuug)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tekkenthuuug/type-steamapi/issues"
+  },
+  "homepage": "https://github.com/tekkenthuuug/type-steamapi#readme",
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
+}
