@@ -29,9 +29,7 @@ export interface SteamResponseWithMessage<T> {
 }
 
 export interface GetGlobalAchievementPercentagesForAppResponse {
-  achievementpercentages: {
-    achievements: SteamGameAchievement[];
-  };
+  achievements: SteamGameAchievement[];
 }
 
 export type AppDetailsResponse = Record<
@@ -106,6 +104,6 @@ export type GetPlayerSummariesResponse = SteamResponse<{
   players: SteamPlayerSummary[];
 }>;
 
-export type ResolveVanityURLResponse = SteamResponseWithMessage<{
+export type ResolveVanityURLResponse = {
   steamid: string;
-}>;
+} & SteamMessage;

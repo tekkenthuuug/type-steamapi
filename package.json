@@ -3,8 +3,10 @@
   "version": "0.8.5",
   "description": "Steam API wrapper created with typescript",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:ts": "tsc -w",
+    "watch:js": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,11 @@
   },
   "homepage": "https://github.com/tekkenthuuug/type-steamapi#readme",
   "devDependencies": {
+    "@types/node-fetch": "^2.5.7",
+    "nodemon": "^2.0.4",
     "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
   }
 }
