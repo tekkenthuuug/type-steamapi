@@ -79,7 +79,7 @@ export interface SteamGameAchievement {
   percent: number;
 }
 
-export interface SteamGameDetails {
+export interface SteamAppDetails {
   type: string;
   name: string;
   steam_appid: number;

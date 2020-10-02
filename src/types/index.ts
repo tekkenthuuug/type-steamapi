@@ -1,7 +1,7 @@
 export * from './steamEntities';
 export * from './steamResponses';
 
-import { SteamGameDetails } from './steamEntities';
+import { SteamAppDetails } from './steamEntities';
 
 export interface SteamCacheConfig {
   enabled: boolean;
@@ -15,5 +15,15 @@ export interface SteamAPIConstructor {
 
 export type GameDetailsCacheValue = [
   timestamp: number,
-  gameDetails: SteamGameDetails
+  gameDetails: SteamAppDetails
 ];
+
+export type AvailableRegions =
+  | 'us'
+  | 'es'
+  | 'de'
+  | 'fr'
+  | 'ru'
+  | 'nz'
+  | 'au'
+  | 'uk';

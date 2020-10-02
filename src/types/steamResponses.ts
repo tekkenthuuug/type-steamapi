@@ -2,7 +2,7 @@ import {
   SteamFriend,
   SteamGame,
   SteamGameAchievement,
-  SteamGameDetails,
+  SteamAppDetails,
   SteamGameNews,
   SteamGameSchema,
   SteamPlayerAchievements,
@@ -32,12 +32,9 @@ export interface GetGlobalAchievementPercentagesForAppResponse {
   achievements: SteamGameAchievement[];
 }
 
-export type AppDetailsResponse = Record<
-  string,
-  {
-    data: SteamGameDetails;
-  } & SteamMessage
->;
+export type AppDetailsResponse = {
+  data: SteamAppDetails;
+} & SteamMessage;
 
 export interface GetNewsForAppResponse {
   appnews: {

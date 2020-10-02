@@ -1,4 +1,4 @@
-function simplifyObject<T extends Object>(object: T) {
+function simplifyObject(object: any) {
   let clearedObject = null;
 
   while (!clearedObject) {

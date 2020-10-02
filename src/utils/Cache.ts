@@ -13,6 +13,16 @@ class Cache<T> {
     return this.cache.get(key);
   }
 
+  createCacheKey(key: string, variables: Record<string, string> = {}) {
+    return `${key}({${Object.entries(variables).reduce((acc, [key, val]) => {
+      if (acc) {
+        acc += ',';
+      }
+      acc += `${key}:${val}`;
+      return acc;
+    }, '')}})`;
+  }
+
   add(key: string, value: T) {
     return this.cache.set(key, [Date.now() + this.expiresIn, value]);
   }

@@ -8,25 +8,19 @@ import {
   SteamAPIConstructor,
   ResolveVanityURLResponse,
   GetGlobalAchievementPercentagesForAppResponse,
+  AvailableRegions,
+  SteamAppDetails,
+  AppDetailsResponse,
 } from './types';
 import Cache from './utils/Cache';
+import { appRegex, profileIdRegex, profileUrlRegex } from './utils/regex';
 import simplifyObject from './utils/simplifyObject';
-
-const appRegex = /^\d{1,7}$/;
-const profileBaseRegex = String.raw`(?:(?:(?:(?:https?)?:\/\/)?(?:www\.)?steamcommunity\.com)?)?\/?`;
-const profileUrlRegex = RegExp(
-  String.raw`${profileBaseRegex}(?:profiles\/)?(\d{17})`,
-  'i'
-);
-const profileIdRegex = RegExp(
-  String.raw`${profileBaseRegex}(?:id\/)?([a-z0-9_-]{2,32})`,
-  'i'
-);
 
 class SteamAPI {
   apiKey;
   cacheConfig: SteamCacheConfig;
   resolveCache: Cache<string> | undefined;
+  appDetailsCache: Cache<SteamAppDetails> | undefined;
   baseAPI = 'https://api.steampowered.com';
   baseStore = 'https://store.steampowered.com/api';
   headers = {
@@ -47,6 +41,7 @@ class SteamAPI {
 
     if (cache.enabled) {
       this.resolveCache = new Cache<string>(cache.expiresIn);
+      this.appDetailsCache = new Cache<SteamAppDetails>(cache.expiresIn);
     }
   }
 
@@ -65,9 +60,9 @@ class SteamAPI {
     const data = await response.json();
 
     // Steam API in some requests returns a single top-level property
-    // This will remove unnecessary when possible
+    // This will remove unnecessary nesting when possible
 
-    return simplifyObject<T>(data);
+    return simplifyObject(data) as T;
   }
 
   async resolve(info: string) {
@@ -129,12 +124,43 @@ class SteamAPI {
 
     return achievements;
   }
+
+  async getGameDetails(
+    app: string,
+    force = false,
+    region: AvailableRegions = 'us'
+  ) {
+    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+
+    // key for cache map
+    const cacheKey = this.appDetailsCache!.createCacheKey(app, { region });
+
+    if (this.cacheConfig.enabled && !force) {
+      // appDetails from cache
+      const fromCache = this.appDetailsCache!.getRelevant(cacheKey);
+
+      if (fromCache) {
+        return fromCache;
+      }
+    }
+
+    const { success, data } = await this.fetch<AppDetailsResponse>(
+      `/appdetails?appids=${app}&cc=${region}`,
+      this.baseStore
+    );
+
+    if (this.cacheConfig.enabled) {
+      this.appDetailsCache!.add(cacheKey, data);
+    }
+
+    return success ? data : null;
+  }
 }
 
 const steam = new SteamAPI({ apiKey });
 
 (async () => {
-  const steamid = await steam.resolve('id/DimGG/');
+  const steamid = await steam.resolve('id/tekkenthuuug/');
   console.log(steamid);
 
   // const featuredCategories = await steam.getFeaturedCategories();
@@ -145,6 +171,9 @@ const steam = new SteamAPI({ apiKey });
 
   // const gameAchievements = await steam.getGameAchievements('730');
   // console.log(gameAchievements);
+
+  // const gameDetails = await steam.getGameDetails('730');
+  // console.log('Game details', gameDetails)
 })();
 
 export default SteamAPI;
