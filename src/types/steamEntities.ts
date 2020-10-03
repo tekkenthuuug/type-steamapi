@@ -214,7 +214,7 @@ export interface SteamPlayerBadgesInfo {
   player_xp_needed_current_level: number;
 }
 
-export interface SteamPlayerBans {
+export interface SteamUserBans {
   SteamId: string;
   CommunityBanned: boolean;
   VACBanned: boolean;

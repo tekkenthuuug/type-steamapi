@@ -36,6 +36,7 @@ import { availableRegions } from './utils/constants';
 import { appRegex, profileIdRegex, profileUrlRegex } from './utils/regex';
 import simplifyObject from './utils/simplifyObject';
 import PlayerBadgesInfo from './classes/PlayerBadgesInfo';
+import UserBans from './classes/UserBans';
 
 class SteamAPI {
   apiKey;
@@ -279,7 +280,7 @@ class SteamAPI {
       return null;
     }
 
-    return players;
+    return players.map(userBan => new UserBans(userBan));
   }
 
   async getUserFriends(steamId: string) {
@@ -418,11 +419,11 @@ const steam = new SteamAPI({ apiKey });
   // const userAchievements = await steam.getUserAchievements(steamid, '730');
   // console.log(userAchievements[0]);
 
-  const userBadges = await steam.getUserBadges(steamid);
-  console.log(userBadges);
+  // const userBadges = await steam.getUserBadges(steamid);
+  // console.log(userBadges);
 
-  // const userBans = await steam.getUserBans(steamid);
-  // console.log(userBans);
+  const userBans = await steam.getUserBans(steamid);
+  console.log(userBans);
 
   // const userFriends = await steam.getUserFriends(steamid);
   // console.log(userFriends);

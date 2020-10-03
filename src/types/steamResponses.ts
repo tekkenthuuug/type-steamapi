@@ -7,7 +7,7 @@ import {
   SteamGameSchema,
   SteamPlayerAchievements,
   SteamPlayerBadgesInfo,
-  SteamPlayerBans,
+  SteamUserBans,
   SteamPlayerStats,
   SteamPlayerSummary,
   SteamServer,
@@ -50,7 +50,7 @@ export type GetPlayerAchievementsResponse = SteamPlayerAchievements &
 export type GetBadgesResponse = SteamPlayerBadgesInfo;
 
 export interface GetPlayerBansResponse {
-  players: SteamPlayerBans[];
+  players: SteamUserBans[];
 }
 
 export interface GetFriendListResponse {
