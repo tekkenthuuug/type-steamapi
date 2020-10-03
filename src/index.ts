@@ -11,8 +11,23 @@ import {
   AvailableRegions,
   SteamAppDetails,
   AppDetailsResponse,
+  GetNewsForAppResponse,
+  GetNumberOfCurrentPlayersResponse,
+  GetSchemaForGameResponse,
+  GetServersAtAddressResponse,
+  GetPlayerAchievementsResponse,
+  GetBadgesResponse,
+  GetPlayerBansResponse,
+  GetFriendListResponse,
+  GetUserGroupListResponse,
+  GetSteamLevelResponse,
+  GetOwnedGamesResponse,
+  GetRecentlyPlayedGames,
+  GetUserStatsForGameResponse,
+  GetPlayerSummariesResponse,
 } from './types';
 import Cache from './utils/Cache';
+import { availableRegions } from './utils/constants';
 import { appRegex, profileIdRegex, profileUrlRegex } from './utils/regex';
 import simplifyObject from './utils/simplifyObject';
 
@@ -26,7 +41,7 @@ class SteamAPI {
   headers = {
     'User-Agent':
       'Type-SteamAPI/0.8.5: (https://www.npmjs.com/package/type-steamapi)',
-    'Content-Type': 'Application/json',
+    'Content-Type': 'application/json',
   };
 
   constructor({
@@ -130,12 +145,18 @@ class SteamAPI {
     force = false,
     region: AvailableRegions = 'us'
   ) {
-    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+    if (!appRegex.test(app)) {
+      throw TypeError('Invalid/no app provided');
+    }
+
+    if (!availableRegions.includes(region)) {
+      throw TypeError(`This region is not available (${region})`);
+    }
 
     // key for cache map
-    const cacheKey = this.appDetailsCache!.createCacheKey(app, { region });
+    const cacheKey = this.appDetailsCache?.createCacheKey(app, { region });
 
-    if (this.cacheConfig.enabled && !force) {
+    if (this.cacheConfig.enabled && cacheKey && !force) {
       // appDetails from cache
       const fromCache = this.appDetailsCache!.getRelevant(cacheKey);
 
@@ -149,11 +170,205 @@ class SteamAPI {
       this.baseStore
     );
 
-    if (this.cacheConfig.enabled) {
+    if (this.cacheConfig.enabled && cacheKey) {
       this.appDetailsCache!.add(cacheKey, data);
     }
 
     return success ? data : null;
+  }
+
+  async getGameNews(app: string) {
+    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+
+    const data = await this.fetch<GetNewsForAppResponse>(
+      `/ISteamNews/GetNewsForApp/v2?appid=${app}`
+    );
+
+    return data.count ? data : null;
+  }
+
+  async getGamePlayers(app: string) {
+    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+
+    const { player_count, result } = await this.fetch<
+      GetNumberOfCurrentPlayersResponse
+    >(`/ISteamUserStats/GetNumberOfCurrentPlayers/v1?appid=${app}`);
+
+    return result === 1 ? player_count : null;
+  }
+
+  async getGameSchema(app: string) {
+    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+
+    const data = await this.fetch<GetSchemaForGameResponse>(
+      `/ISteamUserStats/GetSchemaForGame/v2?appid=${app}`
+    );
+
+    return data ? data : null;
+  }
+
+  async getServers(address: string) {
+    if (!address) {
+      throw TypeError('No host provided');
+    }
+
+    const { success, servers } = await this.fetch<GetServersAtAddressResponse>(
+      `/ISteamApps/GetServersAtAddress/v1?addr=${address}`
+    );
+
+    return success ? servers : null;
+  }
+
+  async getUserAchievements(id: string, app: string) {
+    if (!profileIdRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+    if (!appRegex.test(app)) {
+      throw TypeError('Invalid/no appid provided');
+    }
+
+    const { success, message, ...playerAchievements } = await this.fetch<
+      GetPlayerAchievementsResponse
+    >(
+      `/ISteamUserStats/GetPlayerAchievements/v1?steamid=${id}&appid=${app}&l=english`
+    );
+
+    if (success) {
+      return playerAchievements;
+    } else {
+      throw Error(message);
+    }
+  }
+
+  async getUserBadges(id: string) {
+    if (!profileIdRegex.test(id)) throw TypeError('Invalid/no id provided');
+
+    const data = await this.fetch<GetBadgesResponse>(
+      `/IPlayerService/GetBadges/v1?steamid=${id}`
+    );
+
+    return data;
+  }
+
+  async getUserBans(id: string | string[]) {
+    if (
+      (Array.isArray(id) && id.some(i => !profileIdRegex.test(i))) ||
+      (!Array.isArray(id) && !profileIdRegex.test(id))
+    ) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { players } = await this.fetch<GetPlayerBansResponse>(
+      `/ISteamUser/GetPlayerBans/v1?steamids=${id}`
+    );
+
+    if (!players.length) {
+      return null;
+    }
+
+    return players;
+  }
+
+  async getUserFriends(id: string) {
+    if (!profileIdRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { friends } = await this.fetch<GetFriendListResponse>(
+      `/ISteamUser/GetFriendList/v1?steamid=${id}`
+    );
+
+    return friends.length ? friends : null;
+  }
+
+  async getUserGroups(id: string) {
+    if (!profileIdRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { groups, success, message } = await this.fetch<
+      GetUserGroupListResponse
+    >(`/ISteamUser/GetUserGroupList/v1?steamid=${id}`);
+
+    if (!success) {
+      throw Error(message);
+    }
+
+    return groups.length ? groups : null;
+  }
+
+  async getUserLevel(id: string) {
+    if (!profileIdRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { player_level } = await this.fetch<GetSteamLevelResponse>(
+      `/IPlayerService/GetSteamLevel/v1?steamid=${id}`
+    );
+
+    return player_level;
+  }
+
+  async getUserOwnedGames(id: string) {
+    if (!profileIdRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { games } = await this.fetch<GetOwnedGamesResponse>(
+      `/IPlayerService/GetOwnedGames/v1?steamid=${id}&include_appinfo=1`
+    );
+
+    return games.length ? games : null;
+  }
+
+  async getUserRecentPlayed(id: string) {
+    if (!profileUrlRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { games } = await this.fetch<GetRecentlyPlayedGames>(
+      `/IPlayerService/GetRecentlyPlayedGames/v1?steamid=${id}`
+    );
+
+    return games.length ? games : null;
+  }
+
+  async getUserStats(id: string, app: string) {
+    if (!profileIdRegex.test(id)) {
+      throw TypeError('Invalid/no id provided');
+    }
+    if (!appRegex.test(app)) {
+      throw TypeError('Invalid/no app provided');
+    }
+
+    const data = await this.fetch<GetUserStatsForGameResponse>(
+      `/ISteamUserStats/GetUserStatsForGame/v2?steamid=${id}&appid=${app}`
+    );
+
+    if (!data) {
+      throw Error('No player found');
+    }
+
+    return data;
+  }
+
+  async getUserSummary(id: string | string[]) {
+    if (
+      (Array.isArray(id) && id.some(i => !profileIdRegex.test(i))) ||
+      (!Array.isArray(id) && !profileIdRegex.test(id))
+    ) {
+      throw TypeError('Invalid/no id provided');
+    }
+
+    const { players } = await this.fetch<GetPlayerSummariesResponse>(
+      `/ISteamUser/GetPlayerSummaries/v2?steamids=${id}`
+    );
+
+    if (!players.length) {
+      return null;
+    }
+
+    return players;
   }
 }
 
@@ -174,6 +389,48 @@ const steam = new SteamAPI({ apiKey });
 
   // const gameDetails = await steam.getGameDetails('730');
   // console.log('Game details', gameDetails)
+
+  // const gameNews = await steam.getGameNews('730');
+  // console.log('Game news', gameNews);
+
+  // const gamePlayers = await steam.getGamePlayers('730');
+  // console.log(gamePlayers);
+
+  // const gameSchema = await steam.getGameSchema('730');
+  // console.log(gameSchema);
+
+  // const servers = await steam.getServers('216.52.148.47');
+  // console.log(servers);
+
+  // const userAchievements = await steam.getUserAchievements(steamid, '730');
+  // console.log(userAchievements);
+
+  // const userBadges = await steam.getUserBadges(steamid);
+  // console.log(userBadges);
+
+  // const userBans = await steam.getUserBans(steamid);
+  // console.log(userBans);
+
+  // const userFriends = await steam.getUserFriends(steamid);
+  // console.log(userFriends);
+
+  // const userGroups = await steam.getUserGroups(steamid);
+  // console.log(userGroups);
+
+  // const userLevel = await steam.getUserLevel(steamid);
+  // console.log(userLevel);
+
+  // const userOwnedGames = await steam.getUserOwnedGames(steamid);
+  // console.log(userOwnedGames);
+
+  // const userRecentGames = await steam.getUserRecentPlayed(steamid);
+  // console.log(userRecentGames);
+
+  // const userStats = await steam.getUserStats(steamid, '730');
+  // console.log(userStats);
+
+  // const userSummaries = await steam.getUserSummary(steamid);
+  // console.log(userSummaries);
 })();
 
 export default SteamAPI;

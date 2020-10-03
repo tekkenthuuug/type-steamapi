@@ -8,24 +8,15 @@ import {
   SteamPlayerAchievements,
   SteamPlayerBadges,
   SteamPlayerBans,
-  SteamPlayerServers,
   SteamPlayerStats,
   SteamPlayerSummary,
   SteamServer,
   SteamUserGroup,
 } from './steamEntities';
 
-export interface SteamResponse<T> {
-  response: T;
-}
-
 export interface SteamMessage {
   success: number;
   message?: string;
-}
-
-export interface SteamResponseWithMessage<T> {
-  response: T & SteamMessage;
 }
 
 export interface GetGlobalAchievementPercentagesForAppResponse {
@@ -37,69 +28,60 @@ export type AppDetailsResponse = {
 } & SteamMessage;
 
 export interface GetNewsForAppResponse {
-  appnews: {
-    appid: number;
-    count: number;
-    newsitems: SteamGameNews[];
-  };
+  appid: number;
+  count: number;
+  newsitems: SteamGameNews[];
 }
 
-export type GetNumberOfCurrentPlayersResponse = SteamResponse<{
+export type GetNumberOfCurrentPlayersResponse = {
   result: number;
   player_count: number;
-}>;
+};
 
 export interface GetSchemaForGameResponse {
   game: SteamGameSchema;
 }
 
-export type GetServersAtAddressResponse = SteamResponseWithMessage<{
+export type GetServersAtAddressResponse = {
   servers: SteamServer[];
-}>;
+} & SteamMessage;
 
-export interface GetPlayerAchievementsResponse {
-  playerstats: SteamPlayerAchievements & SteamMessage;
-}
+export type GetPlayerAchievementsResponse = SteamPlayerAchievements &
+  SteamMessage;
 
-export type GetBadgesResponse = SteamResponse<SteamPlayerBadges>;
+export type GetBadgesResponse = SteamPlayerBadges;
 
 export interface GetPlayerBansResponse {
   players: SteamPlayerBans[];
 }
 
 export interface GetFriendListResponse {
-  friendslist: {
-    friends: SteamFriend[];
-  };
+  friends: SteamFriend[];
 }
 
-export type GetUserGroupListResponse = SteamResponseWithMessage<{
+export type GetUserGroupListResponse = {
   groups: SteamUserGroup[];
-}>;
+} & SteamMessage;
 
-export type GetSteamLevelResponse = SteamResponse<{
+export type GetSteamLevelResponse = {
   player_level: number;
-}>;
+};
 
-export type GetOwnedGamesResponse = SteamResponse<{
+export type GetOwnedGamesResponse = {
   game_count: number;
   games: SteamGame[];
-}>;
+};
 
-export type GetRecentlyPlayedGames = SteamResponse<{
+export type GetRecentlyPlayedGames = {
   total_count: number;
   games: SteamGame[];
-}>;
+};
 
-export type ServersGetAccountList = SteamResponse<SteamPlayerServers>;
+export type GetUserStatsForGameResponse = SteamPlayerStats;
 
-export interface GetUserStatsForGameResponse {
-  playerstats: SteamPlayerStats;
-}
-
-export type GetPlayerSummariesResponse = SteamResponse<{
+export interface GetPlayerSummariesResponse {
   players: SteamPlayerSummary[];
-}>;
+}
 
 export type ResolveVanityURLResponse = {
   steamid: string;

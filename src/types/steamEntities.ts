@@ -212,14 +212,6 @@ export interface SteamGame {
   img_logo_url: string;
 }
 
-export interface SteamPlayerServers {
-  actor: string;
-  is_banned: boolean;
-  expires: number;
-  last_action_time: number;
-  servers: SteamServer[];
-}
-
 export interface SteamPlayerStats {
   steamID: string;
   gameName: string;

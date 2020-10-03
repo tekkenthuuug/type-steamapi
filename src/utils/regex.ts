@@ -1,6 +1,7 @@
 const profileBaseRegex = String.raw`(?:(?:(?:(?:https?)?:\/\/)?(?:www\.)?steamcommunity\.com)?)?\/?`;
 
 export const appRegex = /^\d{1,7}$/;
+
 export const profileUrlRegex = RegExp(
   String.raw`${profileBaseRegex}(?:profiles\/)?(\d{17})`,
   'i'
