@@ -18,7 +18,7 @@ If you are using typescript, you don't need to install any type definitions, sin
 ### API key
 Once installed, **you would need to get Steam API key** from [Steam Developer Platform](http://steamcommunity.com/dev/apikey)
 ### Creating an instance
-After receiving you key, you would need to **create an instance of SteamAPI class**, imported as a default from package.
+After receiving an API key, you would need to **create an instance of SteamAPI class**, imported as a default from package.
 ```
 import SteamAPI from 'type-steamapi';
 
