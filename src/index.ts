@@ -6,7 +6,6 @@ import GameSchema from './classes/GameSchema';
 import PlayerSummary from './classes/PlayerSummary';
 export * from './classes';
 export * from './types';
-import apiKey from './config';
 
 import {
   SteamCacheConfig,
@@ -50,7 +49,7 @@ class SteamAPI {
   baseStore = 'https://store.steampowered.com/api';
   headers = {
     'User-Agent':
-      'Type-SteamAPI/0.8.5: (https://www.npmjs.com/package/type-steamapi)',
+      'Type-SteamAPI: (https://www.npmjs.com/package/type-steamapi)',
     'Content-Type': 'application/json',
   };
 
@@ -385,63 +384,43 @@ class SteamAPI {
   }
 }
 
-const steam = new SteamAPI({ apiKey });
-
 (async () => {
-  const steamid = await steam.resolve('id/tekkenthuuug/');
-  console.log(steamid);
-
+  // const steamid = await steam.resolve('id/tekkenthuuug/');
+  // console.log(steamid);
   // const featuredCategories = await steam.getFeaturedCategories();
   // console.log(featuredCategories);
-
   // const featuredGames = await steam.getFeaturedGames();
   // console.log(featuredGames);
-
   // const gameAchievements = await steam.getGameAchievements('730');
   // console.log(gameAchievements);
-
   // const gameDetails = await steam.getAppDetails('730');
   // console.log('Game details', gameDetails);
-
   // const gameNews = await steam.getAppNews('730');
   // console.log('Game news', gameNews);
-
   // const gamePlayers = await steam.getGamePlayers('730');
   // console.log(gamePlayers);
-
   // const gameSchema = await steam.getGameSchema('730');
   // console.log(gameSchema?.availableGameStats.achievements[0]);
-
   // const servers = await steam.getServers('216.52.148.47');
   // console.log(servers);
-
   // const userAchievements = await steam.getUserAchievements(steamid, '730');
   // console.log(userAchievements[0]);
-
   // const userBadges = await steam.getUserBadges(steamid);
   // console.log(userBadges);
-
   // const userBans = await steam.getUserBans(steamid);
   // console.log(userBans);
-
   // const userFriends = await steam.getUserFriends(steamid);
   // console.log(userFriends);
-
   // const userGroups = await steam.getUserGroups(steamid);
   // console.log(userGroups);
-
   // const userLevel = await steam.getUserLevel(steamid);
   // console.log(userLevel);
-
   // const userOwnedGames = await steam.getUserOwnedGames(steamid);
   // console.log(userOwnedGames);
-
   // const userRecentGames = await steam.getUserRecentPlayed(steamid);
   // console.log(userRecentGames);
-
-  const userStats = await steam.getUserStats(steamid, '730');
-  console.log(userStats);
-
+  // const userStats = await steam.getUserStats(steamid, '730');
+  // console.log(userStats);
   // const userSummaries = await steam.getUserSummary(steamid);
   // console.log(userSummaries);
 })();

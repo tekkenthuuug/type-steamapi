@@ -1,17 +1,25 @@
 {
   "name": "type-steamapi",
-  "version": "0.8.5",
+  "version": "0.9.3",
   "description": "Steam API wrapper created with typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "watch:ts": "tsc -w",
-    "watch:js": "nodemon"
+    "watch:js": "nodemon",
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tekkenthuuug/type-steamapi.git"
   },
+  "keywords": [
+    "typescript",
+    "steam",
+    "steampapi",
+    "wrapper",
+    "typed-steam"
+  ],
   "author": "tekkenthuuug <sa.soto317@gmail.com> (https://github.com/tekkenthuuug)",
   "license": "MIT",
   "bugs": {
