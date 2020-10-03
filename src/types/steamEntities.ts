@@ -79,6 +79,52 @@ export interface SteamGameAchievement {
   percent: number;
 }
 
+export interface SteamPackageSub {
+  packageid: number;
+  percent_savings_text: string;
+  percent_savings: number;
+  option_text: string;
+  option_description: string;
+  can_get_free_license: string;
+  is_free_license: boolean;
+  price_in_cents_with_discount: number;
+}
+
+export interface SteamPackageGroup {
+  name: string;
+  title: string;
+  description: string;
+  selection_text: string;
+  save_text: string;
+  display_type: string;
+  is_recurring_subscription: string;
+  subs: SteamPackageSub[];
+}
+
+export interface SteamPlatformRequirement {
+  minimum: string;
+}
+
+export interface SteamContentDescriptors {
+  ids: number[];
+  notes: string;
+}
+
+export interface SteamSupportInfo {
+  coming_soon: boolean;
+  date: string;
+}
+
+export interface SteamAppMetacritic {
+  score: number;
+  url: string;
+}
+
+export interface SteamAppPlatforms {
+  windows: boolean;
+  mac: boolean;
+  linux: boolean;
+}
 export interface SteamAppDetails {
   type: string;
   name: string;
@@ -92,27 +138,15 @@ export interface SteamAppDetails {
   supported_languages: string;
   header_image: string;
   website: string;
-  pc_requirements: {
-    minimum: string;
-  };
-  mac_requirements: {
-    minimum: string;
-  };
-  linux_requirements: {
-    minimum: string;
-  };
+  pc_requirements: SteamPlatformRequirement;
+  mac_requirements: SteamPlatformRequirement;
+  linux_requirements: SteamPlatformRequirement;
   developers: string[];
   publishers: string[];
-  packages: number;
-  platforms: {
-    windows: boolean;
-    mac: boolean;
-    linux: boolean;
-  };
-  metacritic: {
-    score: number;
-    url: string;
-  };
+  packages: number[];
+  package_groups: SteamPackageGroup[];
+  platforms: SteamAppPlatforms;
+  metacritic: SteamAppMetacritic;
   categories: SteamCategory[];
   genres: SteamGenre[];
   screenshots: SteamScreenshot[];
@@ -125,15 +159,9 @@ export interface SteamAppDetails {
     coming_soon: boolean;
     date: string;
   };
-  support_info: {
-    url: string;
-    email: string;
-  };
+  support_info: SteamSupportInfo;
   background: string;
-  content_descriptors: {
-    ids: number[];
-    notes: string;
-  };
+  content_descriptors: SteamContentDescriptors;
 }
 
 export interface SteamGameNews {
@@ -219,28 +247,40 @@ export interface SteamPlayerStats {
   achievements: SteamAchievement[];
 }
 
+export type SteamCommunityVisibilityState = 1 | 3;
+
+export const personaStateMap = {
+  0: 'offline',
+  1: 'online',
+  2: 'busy',
+  3: 'away',
+  4: 'snooze',
+  5: 'looking for trade',
+  6: 'looking to play',
+};
+
+export type SteamPersonaStates = keyof typeof personaStateMap;
+
 export interface SteamPlayerSummary {
   avatar: string;
   avatarmedium: string;
   avatarfull: string;
-  steamid: string;
-  profileurl: string;
-  timecreated: number;
-  lastlogoff: number;
   personaname: string;
-  realname: string;
-  primaryclanid: string;
-  personastate: number;
-  personastateflags: string;
+  profileurl: string;
+  personastate: SteamPersonaStates;
+  communityvisibilitystate: SteamCommunityVisibilityState;
+  profilestate: number;
+  lastlogoff: number;
   commentpermission: string;
-  communityvisibilitystate: string;
-  loccountrycode: string;
-  locstatecode: string;
-  loccityid: string;
-  gameserverip: string;
-  gameserversteamid: string;
-  gameextrainfo: string;
-  gameid: string;
+  realname?: string;
+  primaryclanid?: string;
+  timecreated?: number;
+  gameid?: string;
+  gameserverip?: string;
+  gameextrainfo?: string;
+  loccountycode?: string;
+  locstatecode?: string;
+  loccityid?: string;
 }
 
 export interface SteamFeaturedItem {

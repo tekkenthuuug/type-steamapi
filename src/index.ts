@@ -1,4 +1,6 @@
 import fetch from 'node-fetch';
+import AppDetails from './classes/AppDetails';
+import PlayerSummary from './classes/PlayerSummary';
 export * from './classes';
 export * from './types';
 import apiKey from './config';
@@ -81,7 +83,9 @@ class SteamAPI {
   }
 
   async resolve(info: string) {
-    if (!info) throw TypeError('No link provided');
+    if (!info) {
+      throw TypeError('No link provided');
+    }
 
     const urlMatch = info.match(profileUrlRegex);
     if (urlMatch !== null) {
@@ -126,21 +130,23 @@ class SteamAPI {
     return data;
   }
 
-  async getGameAchievements(app: string) {
-    if (!appRegex.test(app)) {
+  async getGameAchievements(appId: string) {
+    if (!appRegex.test(appId)) {
       throw TypeError('Invalid app provided');
     }
 
     const { achievements } = await this.fetch<
       GetGlobalAchievementPercentagesForAppResponse
     >(
-      `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2?gameid=${app}`
+      `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2?gameid=${appId}`
     );
+
+    console.log(achievements);
 
     return achievements;
   }
 
-  async getGameDetails(
+  async getAppDetails(
     app: string,
     force = false,
     region: AvailableRegions = 'us'
@@ -161,7 +167,7 @@ class SteamAPI {
       const fromCache = this.appDetailsCache!.getRelevant(cacheKey);
 
       if (fromCache) {
-        return fromCache;
+        return new AppDetails(fromCache);
       }
     }
 
@@ -174,34 +180,34 @@ class SteamAPI {
       this.appDetailsCache!.add(cacheKey, data);
     }
 
-    return success ? data : null;
+    return success ? new AppDetails(data) : null;
   }
 
-  async getGameNews(app: string) {
-    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+  async getGameNews(appId: string) {
+    if (!appRegex.test(appId)) throw TypeError('Invalid/no app provided');
 
     const data = await this.fetch<GetNewsForAppResponse>(
-      `/ISteamNews/GetNewsForApp/v2?appid=${app}`
+      `/ISteamNews/GetNewsForApp/v2?appid=${appId}`
     );
 
     return data.count ? data : null;
   }
 
-  async getGamePlayers(app: string) {
-    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+  async getGamePlayers(appId: string) {
+    if (!appRegex.test(appId)) throw TypeError('Invalid/no app provided');
 
     const { player_count, result } = await this.fetch<
       GetNumberOfCurrentPlayersResponse
-    >(`/ISteamUserStats/GetNumberOfCurrentPlayers/v1?appid=${app}`);
+    >(`/ISteamUserStats/GetNumberOfCurrentPlayers/v1?appid=${appId}`);
 
     return result === 1 ? player_count : null;
   }
 
-  async getGameSchema(app: string) {
-    if (!appRegex.test(app)) throw TypeError('Invalid/no app provided');
+  async getGameSchema(appId: string) {
+    if (!appRegex.test(appId)) throw TypeError('Invalid/no app provided');
 
     const data = await this.fetch<GetSchemaForGameResponse>(
-      `/ISteamUserStats/GetSchemaForGame/v2?appid=${app}`
+      `/ISteamUserStats/GetSchemaForGame/v2?appid=${appId}`
     );
 
     return data ? data : null;
@@ -219,18 +225,18 @@ class SteamAPI {
     return success ? servers : null;
   }
 
-  async getUserAchievements(id: string, app: string) {
-    if (!profileIdRegex.test(id)) {
+  async getUserAchievements(steamId: string, appId: string) {
+    if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
-    if (!appRegex.test(app)) {
+    if (!appRegex.test(appId)) {
       throw TypeError('Invalid/no appid provided');
     }
 
     const { success, message, ...playerAchievements } = await this.fetch<
       GetPlayerAchievementsResponse
     >(
-      `/ISteamUserStats/GetPlayerAchievements/v1?steamid=${id}&appid=${app}&l=english`
+      `/ISteamUserStats/GetPlayerAchievements/v1?steamid=${steamId}&appid=${appId}&l=english`
     );
 
     if (success) {
@@ -240,26 +246,27 @@ class SteamAPI {
     }
   }
 
-  async getUserBadges(id: string) {
-    if (!profileIdRegex.test(id)) throw TypeError('Invalid/no id provided');
+  async getUserBadges(steamId: string) {
+    if (!profileIdRegex.test(steamId))
+      throw TypeError('Invalid/no id provided');
 
     const data = await this.fetch<GetBadgesResponse>(
-      `/IPlayerService/GetBadges/v1?steamid=${id}`
+      `/IPlayerService/GetBadges/v1?steamid=${steamId}`
     );
 
     return data;
   }
 
-  async getUserBans(id: string | string[]) {
+  async getUserBans(steamId: string | string[]) {
     if (
-      (Array.isArray(id) && id.some(i => !profileIdRegex.test(i))) ||
-      (!Array.isArray(id) && !profileIdRegex.test(id))
+      (Array.isArray(steamId) && steamId.some(i => !profileIdRegex.test(i))) ||
+      (!Array.isArray(steamId) && !profileIdRegex.test(steamId))
     ) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { players } = await this.fetch<GetPlayerBansResponse>(
-      `/ISteamUser/GetPlayerBans/v1?steamids=${id}`
+      `/ISteamUser/GetPlayerBans/v1?steamids=${steamId}`
     );
 
     if (!players.length) {
@@ -269,26 +276,26 @@ class SteamAPI {
     return players;
   }
 
-  async getUserFriends(id: string) {
-    if (!profileIdRegex.test(id)) {
+  async getUserFriends(steamId: string) {
+    if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { friends } = await this.fetch<GetFriendListResponse>(
-      `/ISteamUser/GetFriendList/v1?steamid=${id}`
+      `/ISteamUser/GetFriendList/v1?steamid=${steamId}`
     );
 
     return friends.length ? friends : null;
   }
 
-  async getUserGroups(id: string) {
-    if (!profileIdRegex.test(id)) {
+  async getUserGroups(steamId: string) {
+    if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { groups, success, message } = await this.fetch<
       GetUserGroupListResponse
-    >(`/ISteamUser/GetUserGroupList/v1?steamid=${id}`);
+    >(`/ISteamUser/GetUserGroupList/v1?steamid=${steamId}`);
 
     if (!success) {
       throw Error(message);
@@ -297,52 +304,52 @@ class SteamAPI {
     return groups.length ? groups : null;
   }
 
-  async getUserLevel(id: string) {
-    if (!profileIdRegex.test(id)) {
+  async getUserLevel(steamId: string) {
+    if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { player_level } = await this.fetch<GetSteamLevelResponse>(
-      `/IPlayerService/GetSteamLevel/v1?steamid=${id}`
+      `/IPlayerService/GetSteamLevel/v1?steamid=${steamId}`
     );
 
     return player_level;
   }
 
-  async getUserOwnedGames(id: string) {
-    if (!profileIdRegex.test(id)) {
+  async getUserOwnedGames(steamId: string) {
+    if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { games } = await this.fetch<GetOwnedGamesResponse>(
-      `/IPlayerService/GetOwnedGames/v1?steamid=${id}&include_appinfo=1`
+      `/IPlayerService/GetOwnedGames/v1?steamid=${steamId}&include_appinfo=1`
     );
 
     return games.length ? games : null;
   }
 
-  async getUserRecentPlayed(id: string) {
-    if (!profileUrlRegex.test(id)) {
+  async getUserRecentPlayed(steamId: string) {
+    if (!profileUrlRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { games } = await this.fetch<GetRecentlyPlayedGames>(
-      `/IPlayerService/GetRecentlyPlayedGames/v1?steamid=${id}`
+      `/IPlayerService/GetRecentlyPlayedGames/v1?steamid=${steamId}`
     );
 
     return games.length ? games : null;
   }
 
-  async getUserStats(id: string, app: string) {
-    if (!profileIdRegex.test(id)) {
+  async getUserStats(steamId: string, appId: string) {
+    if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
-    if (!appRegex.test(app)) {
+    if (!appRegex.test(appId)) {
       throw TypeError('Invalid/no app provided');
     }
 
     const data = await this.fetch<GetUserStatsForGameResponse>(
-      `/ISteamUserStats/GetUserStatsForGame/v2?steamid=${id}&appid=${app}`
+      `/ISteamUserStats/GetUserStatsForGame/v2?steamid=${steamId}&appid=${appId}`
     );
 
     if (!data) {
@@ -352,23 +359,23 @@ class SteamAPI {
     return data;
   }
 
-  async getUserSummary(id: string | string[]) {
+  async getUserSummary(steamId: string | string[]) {
     if (
-      (Array.isArray(id) && id.some(i => !profileIdRegex.test(i))) ||
-      (!Array.isArray(id) && !profileIdRegex.test(id))
+      (Array.isArray(steamId) && steamId.some(i => !profileIdRegex.test(i))) ||
+      (!Array.isArray(steamId) && !profileIdRegex.test(steamId))
     ) {
       throw TypeError('Invalid/no id provided');
     }
 
     const { players } = await this.fetch<GetPlayerSummariesResponse>(
-      `/ISteamUser/GetPlayerSummaries/v2?steamids=${id}`
+      `/ISteamUser/GetPlayerSummaries/v2?steamids=${steamId}`
     );
 
     if (!players.length) {
       return null;
     }
 
-    return players;
+    return players.map(steamSummary => new PlayerSummary(steamSummary));
   }
 }
 
@@ -387,8 +394,8 @@ const steam = new SteamAPI({ apiKey });
   // const gameAchievements = await steam.getGameAchievements('730');
   // console.log(gameAchievements);
 
-  // const gameDetails = await steam.getGameDetails('730');
-  // console.log('Game details', gameDetails)
+  // const gameDetails = await steam.getAppDetails('730');
+  // console.log('Game details', gameDetails);
 
   // const gameNews = await steam.getGameNews('730');
   // console.log('Game news', gameNews);
