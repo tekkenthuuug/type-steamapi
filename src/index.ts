@@ -37,6 +37,7 @@ import { appRegex, profileIdRegex, profileUrlRegex } from './utils/regex';
 import simplifyObject from './utils/simplifyObject';
 import PlayerBadgesInfo from './classes/PlayerBadgesInfo';
 import UserBans from './classes/UserBans';
+import Friend from './classes/Friend';
 
 class SteamAPI {
   apiKey;
@@ -292,7 +293,7 @@ class SteamAPI {
       `/ISteamUser/GetFriendList/v1?steamid=${steamId}`
     );
 
-    return friends.length ? friends : null;
+    return friends.length ? friends.map(friend => new Friend(friend)) : null;
   }
 
   async getUserGroups(steamId: string) {
@@ -422,11 +423,11 @@ const steam = new SteamAPI({ apiKey });
   // const userBadges = await steam.getUserBadges(steamid);
   // console.log(userBadges);
 
-  const userBans = await steam.getUserBans(steamid);
-  console.log(userBans);
+  // const userBans = await steam.getUserBans(steamid);
+  // console.log(userBans);
 
-  // const userFriends = await steam.getUserFriends(steamid);
-  // console.log(userFriends);
+  const userFriends = await steam.getUserFriends(steamid);
+  console.log(userFriends);
 
   // const userGroups = await steam.getUserGroups(steamid);
   // console.log(userGroups);
