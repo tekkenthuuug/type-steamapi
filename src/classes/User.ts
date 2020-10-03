@@ -1,4 +1,4 @@
-class Player {
+class User {
   steamID;
 
   constructor(steamID: string) {
@@ -10,4 +10,4 @@ class Player {
   }
 }
 
-export default Player;
+export default User;

@@ -6,7 +6,7 @@ class Achievement {
   constructor(achievement: {
     apiName: string;
     name: string;
-    description: string;
+    description?: string;
   }) {
     this.apiName = achievement.apiName;
     this.name = achievement.name;

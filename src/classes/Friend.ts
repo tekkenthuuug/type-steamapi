@@ -1,7 +1,7 @@
 import { SteamFriend } from 'src/types';
-import Player from './Player';
+import User from './User';
 
-class Friend extends Player {
+class Friend extends User {
   relationship;
   friendSince;
 

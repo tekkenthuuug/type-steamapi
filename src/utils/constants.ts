@@ -8,3 +8,6 @@ export const availableRegions = [
   'au',
   'uk',
 ];
+
+export const imageCDN =
+  'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps';

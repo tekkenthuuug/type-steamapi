@@ -241,13 +241,19 @@ export interface SteamGame {
   playtime_2weeks: number;
   img_icon_url: string;
   img_logo_url: string;
+  playtime_windows_forever: number;
+  playtime_mac_forever: number;
+  playtime_linux_forever: number;
 }
 
-export interface SteamPlayerStats {
+export interface SteamUserStats {
   steamID: string;
   gameName: string;
   stats: SteamPlayerStat[];
-  achievements: SteamUserAchievement[];
+  achievements: {
+    name: string;
+    achieved: number;
+  }[];
 }
 
 export type SteamCommunityVisibilityState = 1 | 3;

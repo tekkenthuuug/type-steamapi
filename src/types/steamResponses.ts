@@ -8,7 +8,7 @@ import {
   SteamPlayerAchievements,
   SteamPlayerBadgesInfo,
   SteamUserBans,
-  SteamPlayerStats,
+  SteamUserStats,
   SteamPlayerSummary,
   SteamServer,
   SteamUserGroup,
@@ -75,7 +75,7 @@ export type GetRecentlyPlayedGames = {
   games: SteamGame[];
 };
 
-export type GetUserStatsForGameResponse = SteamPlayerStats;
+export type GetUserStatsForGameResponse = SteamUserStats;
 
 export interface GetPlayerSummariesResponse {
   players: SteamPlayerSummary[];

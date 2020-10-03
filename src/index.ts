@@ -38,6 +38,8 @@ import simplifyObject from './utils/simplifyObject';
 import PlayerBadgesInfo from './classes/PlayerBadgesInfo';
 import UserBans from './classes/UserBans';
 import Friend from './classes/Friend';
+import OwnedGame from './classes/OwnedGame';
+import UserStats from './classes/UserStats';
 
 class SteamAPI {
   apiKey;
@@ -333,7 +335,7 @@ class SteamAPI {
       `/IPlayerService/GetOwnedGames/v1?steamid=${steamId}&include_appinfo=1`
     );
 
-    return games.length ? games : null;
+    return games.length ? games.map(game => new OwnedGame(game)) : null;
   }
 
   async getUserRecentPlayed(steamId: string) {
@@ -345,7 +347,7 @@ class SteamAPI {
       `/IPlayerService/GetRecentlyPlayedGames/v1?steamid=${steamId}`
     );
 
-    return games.length ? games : null;
+    return games.length ? games.map(game => new OwnedGame(game)) : null;
   }
 
   async getUserStats(steamId: string, appId: string) {
@@ -356,15 +358,11 @@ class SteamAPI {
       throw TypeError('Invalid/no app provided');
     }
 
-    const data = await this.fetch<GetUserStatsForGameResponse>(
+    const userStats = await this.fetch<GetUserStatsForGameResponse>(
       `/ISteamUserStats/GetUserStatsForGame/v2?steamid=${steamId}&appid=${appId}`
     );
 
-    if (!data) {
-      throw Error('No player found');
-    }
-
-    return data;
+    return userStats ? new UserStats(userStats) : null;
   }
 
   async getUserSummary(steamId: string | string[]) {
@@ -426,8 +424,8 @@ const steam = new SteamAPI({ apiKey });
   // const userBans = await steam.getUserBans(steamid);
   // console.log(userBans);
 
-  const userFriends = await steam.getUserFriends(steamid);
-  console.log(userFriends);
+  // const userFriends = await steam.getUserFriends(steamid);
+  // console.log(userFriends);
 
   // const userGroups = await steam.getUserGroups(steamid);
   // console.log(userGroups);
@@ -441,8 +439,8 @@ const steam = new SteamAPI({ apiKey });
   // const userRecentGames = await steam.getUserRecentPlayed(steamid);
   // console.log(userRecentGames);
 
-  // const userStats = await steam.getUserStats(steamid, '730');
-  // console.log(userStats);
+  const userStats = await steam.getUserStats(steamid, '730');
+  console.log(userStats);
 
   // const userSummaries = await steam.getUserSummary(steamid);
   // console.log(userSummaries);
