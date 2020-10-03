@@ -1,3 +1,4 @@
+
 # Typescript Steam API
 ![GitHub](https://img.shields.io/github/license/tekkenthuuug/type-steamapi?style=for-the-badge)
 ![npm](https://img.shields.io/npm/v/type-steamapi?style=for-the-badge)
@@ -19,6 +20,8 @@ If you are using typescript, you don't need to install any type definitions, sin
 Once installed, **you would need to get Steam API key** from [Steam Developer Platform](http://steamcommunity.com/dev/apikey)
 ### Creating an instance
 After receiving an API key, you would need to **create an instance of SteamAPI class**, imported as a default from package.
+
+***WARNING***: *You should never pass your API key directly as a string! Use [environmental variables](https://www.npmjs.com/package/dotenv) instead!*
 ```
 import SteamAPI from 'type-steamapi';
 
@@ -30,7 +33,7 @@ const steam = new SteamAPI({
     }
 });
 ```
-**By default cache is enabled**, and expires in 5 minutes. However, if you want to overwrite this behaviour, you can add cache property to configuration object.
+**By default cache is enabled** and expires in 5 minutes. However, if you want to overwrite this behaviour, you can add cache property to configuration object.
 
 ### Examples
 Now you can call methods on SteamAPI instance. Lets try a few things.
