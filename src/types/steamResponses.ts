@@ -3,7 +3,7 @@ import {
   SteamGame,
   SteamGameAchievement,
   SteamAppDetails,
-  SteamGameNews,
+  SteamAppNews,
   SteamGameSchema,
   SteamPlayerAchievements,
   SteamPlayerBadges,
@@ -30,7 +30,7 @@ export type AppDetailsResponse = {
 export interface GetNewsForAppResponse {
   appid: number;
   count: number;
-  newsitems: SteamGameNews[];
+  newsitems: SteamAppNews[];
 }
 
 export type GetNumberOfCurrentPlayersResponse = {
@@ -38,9 +38,7 @@ export type GetNumberOfCurrentPlayersResponse = {
   player_count: number;
 };
 
-export interface GetSchemaForGameResponse {
-  game: SteamGameSchema;
-}
+export type GetSchemaForGameResponse = SteamGameSchema;
 
 export type GetServersAtAddressResponse = {
   servers: SteamServer[];

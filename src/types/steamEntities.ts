@@ -1,9 +1,9 @@
-export interface SteamAchievement {
+export interface SteamUserAchievement {
   apiname: string;
   name: string;
   description: string;
-  achieved: string;
-  unlockTime: number;
+  achieved: number;
+  unlocktime: number;
 }
 
 export interface SteamCategory {
@@ -33,7 +33,10 @@ export interface SteamAvatarObject {
   large: string;
 }
 
-export interface SteamGameSchemaAchievement extends SteamAchievement {
+export interface SteamGameSchemaAchievement {
+  name: string;
+  displayName: string;
+  description: string;
   defaultvalue: number;
   hidden: number;
   icon: string;
@@ -68,7 +71,7 @@ export interface SteamServer {
   specport: string;
 }
 
-export interface GameStat {
+export interface SteamGameStat {
   name: string;
   defaultvalue: number;
   displayName: string;
@@ -164,7 +167,7 @@ export interface SteamAppDetails {
   content_descriptors: SteamContentDescriptors;
 }
 
-export interface SteamGameNews {
+export interface SteamAppNews {
   gid: string;
   title: string;
   url: string;
@@ -182,7 +185,7 @@ export interface SteamGameSchema {
   gameName: string;
   gameVersion: string;
   availableGameStats: {
-    stats: GameStat[];
+    stats: SteamGameStat[];
     achievements: SteamGameSchemaAchievement[];
   };
 }
@@ -200,7 +203,7 @@ export interface SteamServer {
 export interface SteamPlayerAchievements {
   steamID: string;
   gameName: string;
-  achievements: SteamAchievement[];
+  achievements: SteamUserAchievement[];
 }
 
 export interface SteamPlayerBadges {
@@ -244,7 +247,7 @@ export interface SteamPlayerStats {
   steamID: string;
   gameName: string;
   stats: SteamPlayerStat[];
-  achievements: SteamAchievement[];
+  achievements: SteamUserAchievement[];
 }
 
 export type SteamCommunityVisibilityState = 1 | 3;

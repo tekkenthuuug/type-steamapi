@@ -1,5 +1,8 @@
 import fetch from 'node-fetch';
+import UserAchievement from './classes/UserAchievement';
 import AppDetails from './classes/AppDetails';
+import AppNews from './classes/AppNews';
+import GameSchema from './classes/GameSchema';
 import PlayerSummary from './classes/PlayerSummary';
 export * from './classes';
 export * from './types';
@@ -141,8 +144,6 @@ class SteamAPI {
       `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2?gameid=${appId}`
     );
 
-    console.log(achievements);
-
     return achievements;
   }
 
@@ -183,14 +184,16 @@ class SteamAPI {
     return success ? new AppDetails(data) : null;
   }
 
-  async getGameNews(appId: string) {
+  async getAppNews(appId: string) {
     if (!appRegex.test(appId)) throw TypeError('Invalid/no app provided');
 
     const data = await this.fetch<GetNewsForAppResponse>(
       `/ISteamNews/GetNewsForApp/v2?appid=${appId}`
     );
 
-    return data.count ? data : null;
+    return data.count
+      ? data.newsitems.map(newsItem => new AppNews(newsItem))
+      : null;
   }
 
   async getGamePlayers(appId: string) {
@@ -210,7 +213,7 @@ class SteamAPI {
       `/ISteamUserStats/GetSchemaForGame/v2?appid=${appId}`
     );
 
-    return data ? data : null;
+    return data ? new GameSchema(data) : null;
   }
 
   async getServers(address: string) {
@@ -240,7 +243,9 @@ class SteamAPI {
     );
 
     if (success) {
-      return playerAchievements;
+      return playerAchievements.achievements.map(
+        achievement => new UserAchievement(achievement)
+      );
     } else {
       throw Error(message);
     }
@@ -397,20 +402,20 @@ const steam = new SteamAPI({ apiKey });
   // const gameDetails = await steam.getAppDetails('730');
   // console.log('Game details', gameDetails);
 
-  // const gameNews = await steam.getGameNews('730');
+  // const gameNews = await steam.getAppNews('730');
   // console.log('Game news', gameNews);
 
   // const gamePlayers = await steam.getGamePlayers('730');
   // console.log(gamePlayers);
 
-  // const gameSchema = await steam.getGameSchema('730');
-  // console.log(gameSchema);
+  const gameSchema = await steam.getGameSchema('730');
+  console.log(gameSchema?.availableGameStats.achievements[0]);
 
   // const servers = await steam.getServers('216.52.148.47');
   // console.log(servers);
 
-  // const userAchievements = await steam.getUserAchievements(steamid, '730');
-  // console.log(userAchievements);
+  const userAchievements = await steam.getUserAchievements(steamid, '730');
+  console.log(userAchievements[0]);
 
   // const userBadges = await steam.getUserBadges(steamid);
   // console.log(userBadges);
