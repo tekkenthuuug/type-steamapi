@@ -6,7 +6,7 @@ import {
   SteamAppNews,
   SteamGameSchema,
   SteamPlayerAchievements,
-  SteamPlayerBadges,
+  SteamPlayerBadgesInfo,
   SteamPlayerBans,
   SteamPlayerStats,
   SteamPlayerSummary,
@@ -47,7 +47,7 @@ export type GetServersAtAddressResponse = {
 export type GetPlayerAchievementsResponse = SteamPlayerAchievements &
   SteamMessage;
 
-export type GetBadgesResponse = SteamPlayerBadges;
+export type GetBadgesResponse = SteamPlayerBadgesInfo;
 
 export interface GetPlayerBansResponse {
   players: SteamPlayerBans[];

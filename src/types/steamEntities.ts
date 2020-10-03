@@ -43,7 +43,7 @@ export interface SteamGameSchemaAchievement {
   icongray: string;
 }
 
-export interface SteamBadge {
+export interface SteamPlayerBadge {
   appid: string;
   badgeid: string;
   border_color: string;
@@ -206,8 +206,8 @@ export interface SteamPlayerAchievements {
   achievements: SteamUserAchievement[];
 }
 
-export interface SteamPlayerBadges {
-  badges: SteamBadge[];
+export interface SteamPlayerBadgesInfo {
+  badges: SteamPlayerBadge[];
   player_xp: number;
   player_level: number;
   player_xp_needed_to_level_up: number;

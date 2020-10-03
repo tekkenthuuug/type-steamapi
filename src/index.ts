@@ -35,6 +35,7 @@ import Cache from './utils/Cache';
 import { availableRegions } from './utils/constants';
 import { appRegex, profileIdRegex, profileUrlRegex } from './utils/regex';
 import simplifyObject from './utils/simplifyObject';
+import PlayerBadgesInfo from './classes/PlayerBadgesInfo';
 
 class SteamAPI {
   apiKey;
@@ -259,7 +260,7 @@ class SteamAPI {
       `/IPlayerService/GetBadges/v1?steamid=${steamId}`
     );
 
-    return data;
+    return new PlayerBadgesInfo(data);
   }
 
   async getUserBans(steamId: string | string[]) {
@@ -408,17 +409,17 @@ const steam = new SteamAPI({ apiKey });
   // const gamePlayers = await steam.getGamePlayers('730');
   // console.log(gamePlayers);
 
-  const gameSchema = await steam.getGameSchema('730');
-  console.log(gameSchema?.availableGameStats.achievements[0]);
+  // const gameSchema = await steam.getGameSchema('730');
+  // console.log(gameSchema?.availableGameStats.achievements[0]);
 
   // const servers = await steam.getServers('216.52.148.47');
   // console.log(servers);
 
-  const userAchievements = await steam.getUserAchievements(steamid, '730');
-  console.log(userAchievements[0]);
+  // const userAchievements = await steam.getUserAchievements(steamid, '730');
+  // console.log(userAchievements[0]);
 
-  // const userBadges = await steam.getUserBadges(steamid);
-  // console.log(userBadges);
+  const userBadges = await steam.getUserBadges(steamid);
+  console.log(userBadges);
 
   // const userBans = await steam.getUserBans(steamid);
   // console.log(userBans);
