@@ -46,6 +46,7 @@ class SteamAPI {
   cacheConfig: SteamCacheConfig;
   resolveCache: Cache<string> | undefined;
   appDetailsCache: Cache<SteamAppDetails> | undefined;
+  ownedGamesCache: Cache<OwnedGame[]> | undefined;
   baseAPI = 'https://api.steampowered.com';
   baseStore = 'https://store.steampowered.com/api';
   headers = {
@@ -67,6 +68,7 @@ class SteamAPI {
     if (cache.enabled) {
       this.resolveCache = new Cache<string>(cache.expiresIn);
       this.appDetailsCache = new Cache<SteamAppDetails>(cache.expiresIn);
+      this.ownedGamesCache = new Cache<OwnedGame[]>(cache.expiresIn);
     }
   }
 
@@ -121,6 +123,7 @@ class SteamAPI {
     }
 
     this.resolveCache?.add(id, steamid);
+
     return steamid;
   }
 
@@ -331,11 +334,22 @@ class SteamAPI {
       throw TypeError('Invalid/no id provided');
     }
 
+    const fromCache = this.ownedGamesCache?.getRelevant(steamId);
+
+    if (fromCache) {
+      console.log('fromCache');
+      return fromCache;
+    }
+
     const { games } = await this.fetch<GetOwnedGamesResponse>(
       `/IPlayerService/GetOwnedGames/v1?steamid=${steamId}&include_appinfo=1`
     );
 
-    return games.length ? games.map(game => new OwnedGame(game)) : null;
+    const ownedGames = games.map(game => new OwnedGame(game));
+
+    this.ownedGamesCache?.add(steamId, ownedGames);
+
+    return ownedGames.length ? ownedGames : null;
   }
 
   async getUserRecentPlayed(steamId: string) {

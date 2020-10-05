@@ -1,6 +1,6 @@
 {
   "name": "type-steamapi",
-  "version": "0.9.4",
+  "version": "0.9.41",
   "description": "Steam API wrapper created with typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,9 @@
     "steam",
     "steampapi",
     "wrapper",
-    "typed-steam"
+    "typed-steam",
+    "graphql",
+    "type-graphql"
   ],
   "author": "tekkenthuuug <sa.soto317@gmail.com> (https://github.com/tekkenthuuug)",
   "license": "MIT",
