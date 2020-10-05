@@ -1,9 +1,10 @@
 import fetch from 'node-fetch';
+import 'reflect-metadata';
 import UserAchievement from './classes/UserAchievement';
 import AppDetails from './classes/AppDetails';
 import AppNews from './classes/AppNews';
 import GameSchema from './classes/GameSchema';
-import PlayerSummary from './classes/PlayerSummary';
+import UserSummary from './classes/UserSummary';
 export * from './classes';
 export * from './types';
 
@@ -380,7 +381,7 @@ class SteamAPI {
       return null;
     }
 
-    return players.map(steamSummary => new PlayerSummary(steamSummary));
+    return players.map(steamSummary => new UserSummary(steamSummary));
   }
 }
 

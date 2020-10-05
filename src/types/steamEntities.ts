@@ -256,8 +256,6 @@ export interface SteamUserStats {
   }[];
 }
 
-export type SteamCommunityVisibilityState = 1 | 3;
-
 export const personaStateMap = {
   0: 'offline',
   1: 'online',
@@ -266,9 +264,7 @@ export const personaStateMap = {
   4: 'snooze',
   5: 'looking for trade',
   6: 'looking to play',
-};
-
-export type SteamPersonaStates = keyof typeof personaStateMap;
+} as { [key: number]: string };
 
 export interface SteamPlayerSummary {
   avatar: string;
@@ -276,8 +272,8 @@ export interface SteamPlayerSummary {
   avatarfull: string;
   personaname: string;
   profileurl: string;
-  personastate: SteamPersonaStates;
-  communityvisibilitystate: SteamCommunityVisibilityState;
+  personastate: number;
+  communityvisibilitystate: number;
   profilestate: number;
   lastlogoff: number;
   commentpermission: string;

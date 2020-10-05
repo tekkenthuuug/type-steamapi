@@ -10,7 +10,7 @@ export { default as PackageGroup } from './PackageGroup';
 export { default as PackageSub } from './PackageSub';
 export { default as PlayerBadge } from './PlayerBadge';
 export { default as PlayerBadgesInfo } from './PlayerBadgesInfo';
-export { default as PlayerSummary } from './PlayerSummary';
+export { default as UserSummary } from './UserSummary';
 export { default as Screenshot } from './Screenshot';
 export { default as UserAchievement } from './UserAchievement';
 export { default as UserBans } from './UserBans';

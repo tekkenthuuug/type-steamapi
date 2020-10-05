@@ -1,12 +1,20 @@
 import { SteamGame } from 'src/types';
+import { Field, ObjectType } from 'type-graphql';
 import { imageCDN } from '../utils/constants';
 
+@ObjectType()
 class OwnedGame {
+  @Field(() => String)
   name;
+  @Field(() => String)
   appId;
+  @Field(() => Number)
   playtimeTotal;
+  @Field(() => Number)
   playtime2weeks;
+  @Field(() => String)
   imgIconUrl;
+  @Field(() => String)
   imgLogoUrl;
 
   constructor(ownedGame: SteamGame) {

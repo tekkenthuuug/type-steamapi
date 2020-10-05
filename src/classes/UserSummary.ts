@@ -1,27 +1,52 @@
+import { Field, ObjectType } from 'type-graphql';
 import { personaStateMap, SteamPlayerSummary } from '../types';
 
-class PlayerSummary {
-  avatar: {
-    default: string;
-    medium: string;
-    full: string;
-  };
+@ObjectType()
+class Avatar {
+  @Field(() => String)
+  default: string;
+  @Field(() => String)
+  medium: string;
+  @Field(() => String)
+  full: string;
+}
+
+@ObjectType()
+class UserSummary {
+  @Field(() => Avatar)
+  avatar: Avatar;
+  @Field(() => String)
   personaName;
+  @Field(() => String)
   profileUrl;
   /** Could be mapped with getPersonaState method */
+  @Field(() => Number)
   personaState;
+  @Field(() => Number)
   communityVisibilityState;
+  @Field(() => Number)
   profileState;
+  @Field(() => Number)
   lastLogoff;
+  @Field(() => String, { nullable: true })
   commentPermission;
+  @Field(() => String, { nullable: true })
   realName;
+  @Field(() => String, { nullable: true })
   primaryClanId;
+  @Field(() => Number, { nullable: true })
   timeCreated;
+  @Field(() => String, { nullable: true })
   gameId;
+  @Field(() => String, { nullable: true })
   gameServerIp;
+  @Field(() => String, { nullable: true })
   gameExtraInfo;
+  @Field(() => String, { nullable: true })
   locCountyCode;
+  @Field(() => String, { nullable: true })
   locStateCode;
+  @Field(() => String, { nullable: true })
   locCityId;
 
   constructor(playerSummary: SteamPlayerSummary) {
@@ -48,9 +73,9 @@ class PlayerSummary {
     this.lastLogoff = playerSummary.lastlogoff;
   }
 
-  getPersonaState() {
+  getPersonaState(): string | undefined {
     return personaStateMap[this.personaState];
   }
 }
 
-export default PlayerSummary;
+export default UserSummary;

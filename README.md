@@ -1,5 +1,5 @@
-
 # Typescript Steam API
+
 ![GitHub](https://img.shields.io/github/license/tekkenthuuug/type-steamapi?style=for-the-badge)
 ![npm](https://img.shields.io/npm/v/type-steamapi?style=for-the-badge)
 
@@ -8,20 +8,29 @@
 ```
 npm install type-steamapi
 ```
-or if you using yarn
+
+or if you are using yarn
+
 ```
 yarn add type-steamapi
 ```
-#### Typescript users
+
+#### Typescript
+
 If you are using typescript, you don't need to install any type definitions, since this package is created with typescript
 
 # Usage
+
 ### API key
+
 Once installed, **you would need to get Steam API key** from [Steam Developer Platform](http://steamcommunity.com/dev/apikey)
+
 ### Creating an instance
+
 After receiving an API key, you would need to **create an instance of SteamAPI class**, imported as a default from package.
 
-***WARNING***: *You should never pass your API key directly as a string! Use [environmental variables](https://www.npmjs.com/package/dotenv) instead!*
+**_WARNING_**: _You should never pass your API key directly as a string! Use [environmental variables](https://www.npmjs.com/package/dotenv) instead!_
+
 ```
 import SteamAPI from 'type-steamapi';
 
@@ -33,11 +42,15 @@ const steam = new SteamAPI({
     }
 });
 ```
+
 **By default cache is enabled** and expires in 5 minutes. However, if you want to overwrite this behaviour, you can add cache property to configuration object.
 
 ### Examples
+
 Now you can call methods on SteamAPI instance. Lets try a few things.
+
 #### Fetching user ID
+
 ```
 const steamid = await steam.resolve('https://steamcommunity.com/id/tekkenthuuug/');
 
@@ -45,7 +58,9 @@ console.log(steamid);
 
 // Output: 76561198129961822
 ```
+
 #### Fetching user owned games
+
 ```
 const  userOwnedGames  =  await steam.getUserOwnedGames(steamid);
 
@@ -63,10 +78,17 @@ console.log(userOwnedGames);
 ```
 
 ### Caching
+
 When enabling cache, **responses for getAppDetails and resolve methods would be cached**. If there would be another request when key found in cache and haven't expired yet, response would be returned from cache.
 
 ### Types
+
 All interfaces, types, and classes could be accessed.
+
+### Type GraphQL
+
+Full type-graphql support would be added some day. Currently it is working only for some classes.
+
 ```
 import  { OwnedGame }  from  'type-steamapi'
 ```
