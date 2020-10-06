@@ -337,7 +337,6 @@ class SteamAPI {
     const fromCache = this.ownedGamesCache?.getRelevant(steamId);
 
     if (fromCache) {
-      console.log('fromCache');
       return fromCache;
     }
 
@@ -398,6 +397,8 @@ class SteamAPI {
     return players.map(steamSummary => new UserSummary(steamSummary));
   }
 }
+
+// const steam = new SteamAPI({ apiKey: 'dddd' });
 
 (async () => {
   // const steamid = await steam.resolve('id/tekkenthuuug/');
