@@ -298,7 +298,7 @@ class SteamAPI {
       `/ISteamUser/GetFriendList/v1?steamid=${steamId}`
     );
 
-    return friends.length ? friends.map(friend => new Friend(friend)) : null;
+    return friends?.length ? friends.map(friend => new Friend(friend)) : null;
   }
 
   async getUserGroups(steamId: string) {
