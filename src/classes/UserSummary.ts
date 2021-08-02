@@ -13,6 +13,8 @@ class Avatar {
 
 @ObjectType()
 class UserSummary {
+  @Field(() => String)
+  steamId;
   @Field(() => Avatar)
   avatar: Avatar;
   @Field(() => String)
@@ -50,6 +52,7 @@ class UserSummary {
   locCityId;
 
   constructor(playerSummary: SteamPlayerSummary) {
+    this.steamId = playerSummary.steamid;
     this.avatar = {
       default: playerSummary.avatar,
       medium: playerSummary.avatarmedium,

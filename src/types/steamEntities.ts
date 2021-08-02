@@ -267,6 +267,7 @@ export const personaStateMap = {
 } as { [key: number]: string };
 
 export interface SteamPlayerSummary {
+  steamid: string;
   avatar: string;
   avatarmedium: string;
   avatarfull: string;
