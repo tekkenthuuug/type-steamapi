@@ -329,7 +329,7 @@ class SteamAPI {
     return player_level;
   }
 
-  async getUserOwnedGames(steamId: string) {
+  async getUserOwnedGames(steamId: string, includeFreeGames=false) {
     if (!profileIdRegex.test(steamId)) {
       throw TypeError('Invalid/no id provided');
     }
@@ -340,9 +340,13 @@ class SteamAPI {
       return fromCache;
     }
 
-    const { games } = await this.fetch<GetOwnedGamesResponse>(
-      `/IPlayerService/GetOwnedGames/v1?steamid=${steamId}&include_appinfo=1`
-    );
+    let ownedGamesParameters = `/IPlayerService/GetOwnedGames/v1?steamid=${steamId}&include_appinfo=1`;
+    
+    if(includeFreeGames){
+      ownedGamesParameters = `/IPlayerService/GetOwnedGames/v1?steamid=${steamId}&include_appinfo=1&include_played_free_games=1`;
+    }
+    
+    const { games } = await this.fetch<GetOwnedGamesResponse>(ownedGamesParameters);
 
     const ownedGames = games.map(game => new OwnedGame(game));
 
